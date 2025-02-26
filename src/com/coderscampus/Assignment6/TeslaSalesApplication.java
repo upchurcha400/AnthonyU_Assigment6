@@ -1,5 +1,6 @@
 package com.coderscampus.Assignment6;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -20,9 +21,27 @@ public class TeslaSalesApplication {
     }
 
     private void analyzeSalesData() {
-        List<TeslaSalesData> model3Sales = fileService.readTeslaSalesData("model3.csv");
-        List<TeslaSalesData> modelSSales = fileService.readTeslaSalesData("modelS.csv");
-        List<TeslaSalesData> modelXSales = fileService.readTeslaSalesData("modelX.csv");
+        List<TeslaSalesData> model3Sales = null;
+		try {
+			model3Sales = fileService.read("src/model3.csv");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        List<TeslaSalesData> modelSSales = null;
+		try {
+			modelSSales = fileService.read("src/modelS.csv");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        List<TeslaSalesData> modelXSales = null;
+		try {
+			modelXSales = fileService.read("src/modelX.csv");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         analyzeModelSales(model3Sales, "Model 3");
         analyzeModelSales(modelSSales, "Model S");
@@ -38,7 +57,7 @@ public class TeslaSalesApplication {
 
         Map<String, Integer> monthlySales = salesData.stream()
                 .collect(Collectors.groupingBy(
-                        data -> data.getDateOfSales().format(DateTimeFormatter.ofPattern("yyyy-MM")),
+                        data -> data.getDateOfSales().format(DateTimeFormatter.ofPattern("yy-MMM")),
                         Collectors.summingInt(TeslaSalesData::getNumberOfSales)
                 ));
 
